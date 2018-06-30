@@ -296,3 +296,39 @@ def _subprocess():
   retorno = objPopen.communicate() # tupla com result e erro
   print retorno[0]
 
+
+# socket() - Módulo onde é possível criar servidores TCP e UDP, e mais algumas coisas interessantes
+def servidorTCP():
+  # import socket
+  # ip = socket.gethostbyname('facebook.com')   # nome para IP
+  # host = socket.gethostbyaddr(ip)             # IP para nome
+  # print(ip, host)
+  # print(socket.gethostname())                 # retorna nome do pc local 
+  # print(socket.getservbyport(80))             # retorna nome do serviço (http)
+  # print(socket.getservbyname('domain'))       # retorna porta do serviço (53)
+
+  import socket
+
+  ip = '127.0.0.1'
+  porta = 2222
+
+  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Cria socket
+  s.bind((ip, porta)) # Define porta que vai ser aberta
+  s.listen(5) # Armazenando em uma fila antes de receber o accept()
+
+  while True:
+    conn, addr = s.accept() # Aceita uma conexão removendo da lista do listen()
+    conn.send('Bem vindo ao seu primeiro servidor TCP\n')
+    print('Conexão de %s:%d' %(addr[0], addr[1]))
+    conn.send('>>>')
+    msg = conn.recv(1024)
+    print('Mensagem Recebida: %s' %msg)
+    conn.close()
+    break
+
+  s.close()
+  
+  # Testado no linux com netcat:
+  # nc 127.0.0.1 2222
+  # >>>olá
+
