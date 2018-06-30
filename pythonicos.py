@@ -332,3 +332,30 @@ def servidorTCP():
   # nc 127.0.0.1 2222
   # >>>olá
 
+def shell_reverso():
+  import socket, subprocess
+
+  ip, porta = '127.0.0.1', 2222
+
+  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  s.bind((ip, porta))
+  s.listen(5)
+
+  conn, addr = s.accept()
+  conn.send('Bem vindo ao seu servidor TCP com shell_reverso\n')
+  print 'Conexão estabelecida com %s:%d' %(addr[0], addr[1])
+
+  while True:
+    conn.send('$ ')
+    cmd = conn.recv(1024)
+    if cmd[:-1] == '': continue
+    if cmd[:-1] == 'exit':
+      conn.close()
+      break
+    else:
+      print 'Comando Recebido: %s' %cmd
+      conn.send(subprocess.Popen(cmd, shell=True, stdout=-1, stderr=-1, stdin=-1).communicate()[0])
+
+  s.close()
+
+  # nc 127.0.0.1 2222
